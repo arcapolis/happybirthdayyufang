@@ -1,89 +1,108 @@
 // ============================================
-// 💝 CUSTOMIZE YOUR VALENTINE'S WEBSITE HERE 💝
+// 🎂 CUSTOMIZE YOUR BIRTHDAY WEBSITE HERE 🎂
 // ============================================
 
 const CONFIG = {
-    // Your Valentine's name that will appear in the title
-    // Example: "Jade", "Sarah", "Mike"
-    valentineName: "my dearest yufang",
+    // The birthday person's name
+    birthdayName: "Yufang",
 
     // The title that appears in the browser tab
-    // You can use emojis! 💝 🍰 💗 💓 💞 💕
-    pageTitle: "happy birthday (づ๑•ᴗ•๑)づ🎂",
+    // You can use emojis! 🎂 🎉 🎁 🥳 🎈
+    pageTitle: "Happy Birthday Yufang! 🎂",
 
     // Floating emojis that appear in the background
     // Find more emojis at: https://emojipedia.org
     floatingEmojis: {
-        hearts: ['🍰', '🎉', '💝', '🥳', '🍾'],  // Heart emojis
-        bears: ['🧸', '🐻']                       // Cute bear emojis
+        birthday: ['🎂', '🎉', '🎁', '🥳', '🎈', '🍰', '🎊'],  // Birthday emojis
+        extras: ['🌟', '✨', '💝']                              // Extra sparkly emojis
     },
 
-    // Questions and answers
-    // Customize each question and its possible responses
-    questions: {
-        first: {
-            text: "Do you like me?",                                    // First interaction
-            yesBtn: "Yes",                                             // Text for "Yes" button
-            noBtn: "No",                                               // Text for "No" button
-            secretAnswer: "I don't like you, I love you! ❤️"           // Secret hover message
+    // Page content
+    pages: {
+        welcome: {
+            title: "Happy Birthday!",
+            subtitle: "Hope your special day is amazing! 🎉",
+            nextBtn: "Continue 🎂"
         },
-        second: {
-            text: "How much do you love me?",                          // For the love meter
-            startText: "This much!",                                   // Text before the percentage
-            nextBtn: "Next ❤️"                                         // Text for the next button
+        message: {
+            title: "A Special Message for You",
+            text: "Wishing you the most wonderful birthday filled with joy, laughter, and all your favorite things! You deserve all the happiness in the world. 💝",
+            nextBtn: "What's Next? 🎁"
         },
-        third: {
-            text: "Will you be my Valentine on February 14th, 2025? 🌹", // The big question!
-            yesBtn: "Yes!",                                             // Text for "Yes" button
-            noBtn: "No"                                                 // Text for "No" button
+        choices: {
+            title: "Choose Your Birthday Adventure!",
+            subtitle: "Pick what sounds most amazing to you:",
+            options: [
+                {
+                    id: "spa",
+                    title: "Relaxing Spa Day",
+                    description: "Pamper yourself with a peaceful day of relaxation 🧘‍♀️✨",
+                    emoji: "🛁"
+                },
+                {
+                    id: "dinner",
+                    title: "Fancy Dinner",
+                    description: "Enjoy an elegant dining experience at your favorite restaurant 🍽️🥂",
+                    emoji: "🍾"
+                },
+                {
+                    id: "golf",
+                    title: "Mystery Mini Golf",
+                    description: "Have a fun adventure with exciting mini golf challenges ⛳🎯",
+                    emoji: "⛳"
+                }
+            ]
         }
     },
 
-    // Love meter messages
-    // They show up depending on how far they slide the meter
-    loveMessages: {
-        extreme: "WOOOOW You love me that much?? 🥰🚀💝",  // Shows when they go past 5000%
-        high: "To infinity and beyond! 🚀💝",              // Shows when they go past 1000%
-        normal: "And beyond! 🥰"                           // Shows when they go past 100%
-    },
-
-    // Messages that appear after they say "Yes!"
-    celebration: {
-        title: "Yay! I'm the luckiest person in the world! 🎉💝💖💝💓",
-        message: "Now come get your gift, a big warm hug and a huge kiss!",
-        emojis: "🎁💖🤗💝💋❤️💕"  // These will bounce around
+    // Messages that appear after they make a choice
+    responses: {
+        spa: {
+            title: "Perfect Choice! 🧘‍♀️",
+            message: "A relaxing spa day it is! Time to unwind and treat yourself like the queen you are! 👑✨",
+            emojis: "🛁💆‍♀️🕯️💝🌸"
+        },
+        dinner: {
+            title: "Excellent Choice! 🍽️",
+            message: "A fancy dinner sounds amazing! Get ready for a delicious evening of great food and even better company! 🥂",
+            emojis: "🍾🍽️🌹💝🎉"
+        },
+        golf: {
+            title: "Adventure Time! ⛳",
+            message: "Mystery mini golf it is! Get ready for a fun-filled adventure with surprises around every corner! 🎯",
+            emojis: "⛳🎯🎊💝🏆"
+        }
     },
 
     // Color scheme for the website
-    // Use https://colorhunt.co or https://coolors.co to find beautiful color combinations
+    // Birthday-themed colors - feel free to customize!
     colors: {
-        backgroundStart: "#ffafbd",      // Gradient start (try pastel colors for a soft look)
-        backgroundEnd: "#ffc3a0",        // Gradient end (should complement backgroundStart)
-        buttonBackground: "#ff6b6b",     // Button color (should stand out against the background)
-        buttonHover: "#ff8787",          // Button hover color (slightly lighter than buttonBackground)
-        textColor: "#ff4757"             // Text color (make sure it's readable!)
+        backgroundStart: "#FFE5F1",      // Soft pink
+        backgroundEnd: "#FFD3E8",        // Light pink
+        buttonBackground: "#FF69B4",     // Hot pink
+        buttonHover: "#FF1493",          // Deep pink
+        textColor: "#8B008B",            // Dark magenta
+        accentColor: "#FFB6C1"           // Light pink accent
     },
 
     // Animation settings
-    // Adjust these if you want faster/slower animations
     animations: {
-        floatDuration: "15s",           // How long it takes hearts to float up (10-20s recommended)
-        floatDistance: "50px",          // How far hearts move sideways (30-70px recommended)
-        bounceSpeed: "0.5s",            // Speed of bouncing animations (0.3-0.7s recommended)
-        heartExplosionSize: 1.5         // Size of heart explosion effect (1.2-2.0 recommended)
+        floatDuration: "12s",            // How long it takes emojis to float up
+        floatDistance: "40px",           // How far emojis move sideways
+        bounceSpeed: "0.6s",             // Speed of bouncing animations
+        celebrationSize: 1.8             // Size of celebration effect
     },
 
     // Background Music (Optional)
-    // Add your own music URL after getting proper licenses
     music: {
-        enabled: true,                     // Music feature is enabled
-        autoplay: true,                    // Try to autoplay (note: some browsers may block this)
-        musicUrl: "https://res.cloudinary.com/dncywqfpb/video/upload/v1738399057/music_qrhjvy.mp3", // Music streaming URL
-        startText: "🎵 Play Music",        // Button text to start music
-        stopText: "🔇 Stop Music",         // Button text to stop music
-        volume: 0.5                        // Volume level (0.0 to 1.0)
+        enabled: true,
+        autoplay: true,
+        musicUrl: "https://res.cloudinary.com/dncywqfpb/video/upload/v1738399057/music_qrhjvy.mp3",
+        startText: "🎵 Play Birthday Music",
+        stopText: "🔇 Stop Music",
+        volume: 0.4
     }
 };
 
 // Don't modify anything below this line unless you know what you're doing
-window.VALENTINE_CONFIG = CONFIG; 
+window.BIRTHDAY_CONFIG = CONFIG;
