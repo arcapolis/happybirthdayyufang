@@ -1,14 +1,14 @@
 // Initialize configuration
-const config = window.VALENTINE_CONFIG;
+const config = window.BIRTHDAY_CONFIG;
 
 // Validate configuration
 function validateConfig() {
     const warnings = [];
 
     // Check required fields
-    if (!config.valentineName) {
-        warnings.push("Valentine's name is not set! Using default.");
-        config.valentineName = "My Love";
+    if (!config.birthdayName) {
+        warnings.push("Birthday name is not set! Using default.");
+        config.birthdayName = "Birthday Person";
     }
 
     // Validate colors
@@ -26,11 +26,6 @@ function validateConfig() {
         config.animations.floatDuration = "5s";
     }
 
-    if (config.animations.heartExplosionSize < 1 || config.animations.heartExplosionSize > 3) {
-        warnings.push("Heart explosion size should be between 1 and 3! Using default.");
-        config.animations.heartExplosionSize = 1.5;
-    }
-
     // Log warnings if any
     if (warnings.length > 0) {
         console.warn("⚠️ Configuration Warnings:");
@@ -41,11 +36,12 @@ function validateConfig() {
 // Default color values
 function getDefaultColor(key) {
     const defaults = {
-        backgroundStart: "#ffafbd",
-        backgroundEnd: "#ffc3a0",
-        buttonBackground: "#ff6b6b",
-        buttonHover: "#ff8787",
-        textColor: "#ff4757"
+        backgroundStart: "#FFE5F1",
+        backgroundEnd: "#FFD3E8", 
+        buttonBackground: "#FF69B4",
+        buttonHover: "#FF1493",
+        textColor: "#8B008B",
+        accentColor: "#FFB6C1"
     };
     return defaults[key];
 }
@@ -53,151 +49,191 @@ function getDefaultColor(key) {
 // Set page title
 document.title = config.pageTitle;
 
+// Current page tracker
+let currentPage = 'welcome';
+
 // Initialize the page content when DOM is loaded
 window.addEventListener('DOMContentLoaded', () => {
     // Validate configuration first
     validateConfig();
 
-    // Set texts from config
-    document.getElementById('valentineTitle').textContent = `${config.valentineName}, my love...`;
-    
-    // Set first question texts
-    document.getElementById('question1Text').textContent = config.questions.first.text;
-    document.getElementById('yesBtn1').textContent = config.questions.first.yesBtn;
-    document.getElementById('noBtn1').textContent = config.questions.first.noBtn;
-    document.getElementById('secretAnswerBtn').textContent = config.questions.first.secretAnswer;
-    
-    // Set second question texts
-    document.getElementById('question2Text').textContent = config.questions.second.text;
-    document.getElementById('startText').textContent = config.questions.second.startText;
-    document.getElementById('nextBtn').textContent = config.questions.second.nextBtn;
-    
-    // Set third question texts
-    document.getElementById('question3Text').textContent = config.questions.third.text;
-    document.getElementById('yesBtn3').textContent = config.questions.third.yesBtn;
-    document.getElementById('noBtn3').textContent = config.questions.third.noBtn;
+    // Initialize first page
+    showWelcomePage();
 
     // Create initial floating elements
     createFloatingElements();
 
     // Setup music player
     setupMusicPlayer();
+
+    // Apply custom colors
+    applyCustomColors();
 });
 
-// Create floating hearts and bears
+// Show welcome page
+function showWelcomePage() {
+    const container = document.getElementById('content');
+    container.innerHTML = `
+        <div class="page-section" id="welcomePage">
+            <h1 class="main-title">${config.pages.welcome.title}</h1>
+            <h2 class="birthday-name">${config.birthdayName}!</h2>
+            <p class="subtitle">${config.pages.welcome.subtitle}</p>
+            <button onclick="showMessagePage()" class="main-btn">
+                ${config.pages.welcome.nextBtn}
+            </button>
+        </div>
+    `;
+    currentPage = 'welcome';
+}
+
+// Show message page
+function showMessagePage() {
+    const container = document.getElementById('content');
+    container.innerHTML = `
+        <div class="page-section" id="messagePage">
+            <h1 class="page-title">${config.pages.message.title}</h1>
+            <div class="message-box">
+                <p class="birthday-message">${config.pages.message.text}</p>
+            </div>
+            <button onclick="showChoicesPage()" class="main-btn">
+                ${config.pages.message.nextBtn}
+            </button>
+        </div>
+    `;
+    currentPage = 'message';
+    
+    // Add some extra floating elements for the message page
+    createExtraFloatingElements();
+}
+
+// Show choices page
+function showChoicesPage() {
+    const container = document.getElementById('content');
+    const optionsHTML = config.pages.choices.options.map(option => `
+        <div class="choice-option" onclick="makeChoice('${option.id}')">
+            <div class="choice-emoji">${option.emoji}</div>
+            <h3 class="choice-title">${option.title}</h3>
+            <p class="choice-description">${option.description}</p>
+        </div>
+    `).join('');
+
+    container.innerHTML = `
+        <div class="page-section" id="choicesPage">
+            <h1 class="page-title">${config.pages.choices.title}</h1>
+            <p class="subtitle">${config.pages.choices.subtitle}</p>
+            <div class="choices-container">
+                ${optionsHTML}
+            </div>
+        </div>
+    `;
+    currentPage = 'choices';
+}
+
+// Handle choice selection
+function makeChoice(choiceId) {
+    const choice = config.responses[choiceId];
+    if (!choice) return;
+
+    const container = document.getElementById('content');
+    container.innerHTML = `
+        <div class="page-section celebration" id="celebrationPage">
+            <h1 class="celebration-title">${choice.title}</h1>
+            <div class="celebration-message">
+                <p>${choice.message}</p>
+            </div>
+            <div class="celebration-emojis">${choice.emojis}</div>
+            <button onclick="showWelcomePage()" class="main-btn">
+                Start Over 🔄
+            </button>
+        </div>
+    `;
+    currentPage = 'celebration';
+    
+    // Create celebration effect
+    createCelebrationEffect();
+}
+
+// Create floating birthday elements
 function createFloatingElements() {
     const container = document.querySelector('.floating-elements');
+    if (!container) return;
     
-    // Create hearts
-    config.floatingEmojis.hearts.forEach(heart => {
+    // Clear existing elements
+    container.innerHTML = '';
+
+    // Create birthday emojis
+    config.floatingEmojis.birthday.forEach(emoji => {
         const div = document.createElement('div');
-        div.className = 'heart';
-        div.innerHTML = heart;
+        div.className = 'floating-emoji birthday-emoji';
+        div.innerHTML = emoji;
         setRandomPosition(div);
         container.appendChild(div);
     });
 
-    // Create bears
-    config.floatingEmojis.bears.forEach(bear => {
+    // Create extra sparkly emojis
+    config.floatingEmojis.extras.forEach(emoji => {
         const div = document.createElement('div');
-        div.className = 'bear';
-        div.innerHTML = bear;
+        div.className = 'floating-emoji extra-emoji';
+        div.innerHTML = emoji;
         setRandomPosition(div);
         container.appendChild(div);
     });
+}
+
+// Create extra floating elements for special moments
+function createExtraFloatingElements() {
+    const container = document.querySelector('.floating-elements');
+    if (!container) return;
+
+    // Add some extra birthday emojis for the message page
+    for (let i = 0; i < 5; i++) {
+        const div = document.createElement('div');
+        div.className = 'floating-emoji birthday-emoji';
+        const randomEmoji = config.floatingEmojis.birthday[Math.floor(Math.random() * config.floatingEmojis.birthday.length)];
+        div.innerHTML = randomEmoji;
+        setRandomPosition(div);
+        container.appendChild(div);
+    }
+}
+
+// Create celebration effect
+function createCelebrationEffect() {
+    const container = document.querySelector('.floating-elements');
+    if (!container) return;
+
+    // Create burst of emojis
+    for (let i = 0; i < 20; i++) {
+        const div = document.createElement('div');
+        div.className = 'floating-emoji celebration-emoji';
+        const allEmojis = [...config.floatingEmojis.birthday, ...config.floatingEmojis.extras];
+        const randomEmoji = allEmojis[Math.floor(Math.random() * allEmojis.length)];
+        div.innerHTML = randomEmoji;
+        setRandomPosition(div);
+        
+        // Make celebration emojis more energetic
+        div.style.animationDuration = '3s';
+        div.style.transform = `scale(${config.animations.celebrationSize})`;
+        
+        container.appendChild(div);
+    }
 }
 
 // Set random position for floating elements
 function setRandomPosition(element) {
     element.style.left = Math.random() * 100 + 'vw';
     element.style.animationDelay = Math.random() * 5 + 's';
-    element.style.animationDuration = 10 + Math.random() * 20 + 's';
+    element.style.animationDuration = (10 + Math.random() * 20) + 's';
 }
 
-// Function to show next question
-function showNextQuestion(questionNumber) {
-    document.querySelectorAll('.question-section').forEach(q => q.classList.add('hidden'));
-    document.getElementById(`question${questionNumber}`).classList.remove('hidden');
-}
-
-// Function to move the "No" button when clicked
-function moveButton(button) {
-    const x = Math.random() * (window.innerWidth - button.offsetWidth);
-    const y = Math.random() * (window.innerHeight - button.offsetHeight);
-    button.style.position = 'fixed';
-    button.style.left = x + 'px';
-    button.style.top = y + 'px';
-}
-
-// Love meter functionality
-const loveMeter = document.getElementById('loveMeter');
-const loveValue = document.getElementById('loveValue');
-const extraLove = document.getElementById('extraLove');
-
-function setInitialPosition() {
-    loveMeter.value = 100;
-    loveValue.textContent = 100;
-    loveMeter.style.width = '100%';
-}
-
-loveMeter.addEventListener('input', () => {
-    const value = parseInt(loveMeter.value);
-    loveValue.textContent = value;
-    
-    if (value > 100) {
-        extraLove.classList.remove('hidden');
-        const overflowPercentage = (value - 100) / 9900;
-        const extraWidth = overflowPercentage * window.innerWidth * 0.8;
-        loveMeter.style.width = `calc(100% + ${extraWidth}px)`;
-        loveMeter.style.transition = 'width 0.3s';
-        
-        // Show different messages based on the value
-        if (value >= 5000) {
-            extraLove.classList.add('super-love');
-            extraLove.textContent = config.loveMessages.extreme;
-        } else if (value > 1000) {
-            extraLove.classList.remove('super-love');
-            extraLove.textContent = config.loveMessages.high;
-        } else {
-            extraLove.classList.remove('super-love');
-            extraLove.textContent = config.loveMessages.normal;
-        }
-    } else {
-        extraLove.classList.add('hidden');
-        extraLove.classList.remove('super-love');
-        loveMeter.style.width = '100%';
-    }
-});
-
-// Initialize love meter
-window.addEventListener('DOMContentLoaded', setInitialPosition);
-window.addEventListener('load', setInitialPosition);
-
-// Celebration function
-function celebrate() {
-    document.querySelectorAll('.question-section').forEach(q => q.classList.add('hidden'));
-    const celebration = document.getElementById('celebration');
-    celebration.classList.remove('hidden');
-    
-    // Set celebration messages
-    document.getElementById('celebrationTitle').textContent = config.celebration.title;
-    document.getElementById('celebrationMessage').textContent = config.celebration.message;
-    document.getElementById('celebrationEmojis').textContent = config.celebration.emojis;
-    
-    // Create heart explosion effect
-    createHeartExplosion();
-}
-
-// Create heart explosion animation
-function createHeartExplosion() {
-    for (let i = 0; i < 50; i++) {
-        const heart = document.createElement('div');
-        const randomHeart = config.floatingEmojis.hearts[Math.floor(Math.random() * config.floatingEmojis.hearts.length)];
-        heart.innerHTML = randomHeart;
-        heart.className = 'heart';
-        document.querySelector('.floating-elements').appendChild(heart);
-        setRandomPosition(heart);
-    }
+// Apply custom colors from config
+function applyCustomColors() {
+    const root = document.documentElement;
+    root.style.setProperty('--bg-start', config.colors.backgroundStart);
+    root.style.setProperty('--bg-end', config.colors.backgroundEnd);
+    root.style.setProperty('--btn-bg', config.colors.buttonBackground);
+    root.style.setProperty('--btn-hover', config.colors.buttonHover);
+    root.style.setProperty('--text-color', config.colors.textColor);
+    root.style.setProperty('--accent-color', config.colors.accentColor);
 }
 
 // Music Player Setup
@@ -209,13 +245,15 @@ function setupMusicPlayer() {
 
     // Only show controls if music is enabled in config
     if (!config.music.enabled) {
-        musicControls.style.display = 'none';
+        if (musicControls) musicControls.style.display = 'none';
         return;
     }
 
+    if (!musicSource || !bgMusic || !musicToggle) return;
+
     // Set music source and volume
     musicSource.src = config.music.musicUrl;
-    bgMusic.volume = config.music.volume || 0.5;
+    bgMusic.volume = config.music.volume || 0.4;
     bgMusic.load();
 
     // Try autoplay if enabled
@@ -239,4 +277,4 @@ function setupMusicPlayer() {
             musicToggle.textContent = config.music.startText;
         }
     });
-} 
+}
